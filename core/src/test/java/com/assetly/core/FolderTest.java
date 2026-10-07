@@ -23,47 +23,45 @@ public class FolderTest {
         Folder folder = new Folder(ID, OWNER_ID, NAME, ASSET_IDS);
 
         assertAll(
-            () -> assertEquals(ID, folder.id()),
-            () -> assertEquals(OWNER_ID, folder.ownerId()),
-            () -> assertEquals(NAME, folder.name()),
-            () -> assertEquals(ASSET_IDS, folder.assetIds())
-        );
+                () -> assertEquals(ID, folder.id()),
+                () -> assertEquals(OWNER_ID, folder.ownerId()),
+                () -> assertEquals(NAME, folder.name()),
+                () -> assertEquals(ASSET_IDS, folder.assetIds()));
     }
 
     @Test
     void nullIdIsNotAllowed() {
         var e = assertThrows(NullPointerException.class,
-            () -> new Folder(null, OWNER_ID, NAME, ASSET_IDS));
+                () -> new Folder(null, OWNER_ID, NAME, ASSET_IDS));
         assertEquals("id cannot be null", e.getMessage());
     }
 
     @Test
     void nullNameIsNotAllowed() {
         var e = assertThrows(NullPointerException.class,
-            () -> new Folder(ID, OWNER_ID, null, ASSET_IDS));
+                () -> new Folder(ID, OWNER_ID, null, ASSET_IDS));
         assertEquals("name cannot be null", e.getMessage());
     }
 
     @Test
     void nullAssetIdsIsNotAllowed() {
         var e = assertThrows(NullPointerException.class,
-            () -> new Folder(ID, OWNER_ID, NAME, null));
+                () -> new Folder(ID, OWNER_ID, NAME, null));
         assertEquals("assetIds cannot be null", e.getMessage());
     }
 
     @Test
     void nullOwnerIdIsNotAllowed() {
         var e = assertThrows(NullPointerException.class,
-            () -> new Folder(ID, null, NAME, ASSET_IDS));
+                () -> new Folder(ID, null, NAME, ASSET_IDS));
         assertEquals("ownerId cannot be null", e.getMessage());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", " "})
+    @ValueSource(strings = { "", " " })
     void blankNameIsNotAllowed(String name) {
         var e = assertThrows(IllegalArgumentException.class,
-            () -> new Folder(ID, OWNER_ID, name, ASSET_IDS)
-        );
+                () -> new Folder(ID, OWNER_ID, name, ASSET_IDS));
 
         assertEquals("name cannot be blank", e.getMessage());
     }
@@ -80,7 +78,7 @@ public class FolderTest {
     void assetIdsCannotBeModified() {
         Folder folder = new Folder(ID, OWNER_ID, NAME, ASSET_IDS);
         assertThrows(UnsupportedOperationException.class,
-            () -> folder.assetIds().add(UUID.randomUUID()));
+                () -> folder.assetIds().add(UUID.randomUUID()));
     }
 
     @Test
@@ -89,8 +87,7 @@ public class FolderTest {
         ids.add(ids.get(0));
 
         var e = assertThrows(IllegalArgumentException.class,
-            () -> new Folder(ID, OWNER_ID, NAME, ids)
-        );
+                () -> new Folder(ID, OWNER_ID, NAME, ids));
         assertEquals("assetIds cannot contain duplicates", e.getMessage());
     }
 
@@ -117,8 +114,7 @@ public class FolderTest {
         Folder folder = new Folder(ID, OWNER_ID, NAME, ASSET_IDS);
 
         var e = assertThrows(IllegalArgumentException.class,
-            () -> folder.withAsset(ASSET_IDS.get(0))
-        );
+                () -> folder.withAsset(ASSET_IDS.get(0)));
         assertEquals("assetIds cannot contain duplicates", e.getMessage());
     }
 }

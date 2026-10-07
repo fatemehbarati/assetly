@@ -5,12 +5,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 public record Asset(
-    UUID id,
-    String name,
-    String mimeType,
-    long sizeBytes,
-    Instant createdAt
-) {
+        UUID id,
+        String name,
+        String mimeType,
+        long sizeBytes,
+        Instant createdAt) {
     public Asset {
         Objects.requireNonNull(id, "id cannot be null");
         Objects.requireNonNull(name, "name cannot be null");

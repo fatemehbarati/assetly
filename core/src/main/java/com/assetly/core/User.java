@@ -6,11 +6,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public record User(
-    UUID id,
-    String email,
-    String displayName,
-    Instant createdAt
-) {
+        UUID id,
+        String email,
+        String displayName,
+        Instant createdAt) {
     public User {
         Objects.requireNonNull(id, "id cannot be null");
         Objects.requireNonNull(email, "email cannot be null");

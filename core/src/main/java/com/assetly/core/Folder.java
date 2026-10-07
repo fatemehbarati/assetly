@@ -7,11 +7,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public record Folder(
-    UUID id,
-    UUID ownerId,
-    String name,
-    List<UUID> assetIds
-) {
+        UUID id,
+        UUID ownerId,
+        String name,
+        List<UUID> assetIds) {
     public Folder {
         Objects.requireNonNull(id, "id cannot be null");
         Objects.requireNonNull(ownerId, "ownerId cannot be null");

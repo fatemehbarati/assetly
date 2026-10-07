@@ -59,7 +59,7 @@ class AssetTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", " ", "\t"})
+    @ValueSource(strings = { "", " ", "\t" })
     void blankNameIsNotAllowed(String name) {
         var e = assertThrows(IllegalArgumentException.class,
                 () -> new Asset(ID, name, MIME_TYPE, SIZE_BYTES, CREATED_AT));
