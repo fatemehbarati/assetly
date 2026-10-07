@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AssetTest {
+class AssetTest {
     private static final UUID ID = UUID.randomUUID();
     private static final String NAME = "logo.png";
     private static final String MIME_TYPE = "image/png";
@@ -59,7 +59,7 @@ public class AssetTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "", " " })
+    @ValueSource(strings = {"", " ", "\t"})
     void blankNameIsNotAllowed(String name) {
         var e = assertThrows(IllegalArgumentException.class,
                 () -> new Asset(ID, name, MIME_TYPE, SIZE_BYTES, CREATED_AT));
