@@ -1,4 +1,4 @@
-package com.assetly.core;
+package com.assetly.core.domain;
 
 import java.time.Instant;
 import java.util.UUID;

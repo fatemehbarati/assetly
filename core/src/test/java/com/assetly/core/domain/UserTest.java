@@ -1,4 +1,4 @@
-package com.assetly.core;
+package com.assetly.core.domain;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
