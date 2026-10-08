@@ -9,11 +9,13 @@ public record Asset(
         String name,
         String mimeType,
         long sizeBytes,
+        UUID ownerId,
         Instant createdAt) {
     public Asset {
         Objects.requireNonNull(id, "id cannot be null");
         Objects.requireNonNull(name, "name cannot be null");
         Objects.requireNonNull(mimeType, "mimeType cannot be null");
+        Objects.requireNonNull(ownerId, "ownerId cannot be null");
         Objects.requireNonNull(createdAt, "createdAt cannot be null");
 
         if (name.isBlank()) {

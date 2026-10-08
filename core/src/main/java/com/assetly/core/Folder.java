@@ -21,13 +21,20 @@ public record Folder(
             throw new IllegalArgumentException("name cannot be blank");
         }
 
+        if (assetIds.stream().anyMatch(Objects::isNull)) {
+            throw new NullPointerException("assetIds cannot contain null");
+        }
+
         assetIds = List.copyOf(assetIds);
+
         if (new HashSet<>(assetIds).size() != assetIds.size()) {
             throw new IllegalArgumentException("assetIds cannot contain duplicates");
         }
     }
 
     public Folder withAsset(UUID assetId) {
+        Objects.requireNonNull(assetId, "assetId cannot be null");
+
         List<UUID> newAssetIds = new ArrayList<>(assetIds);
         newAssetIds.add(assetId);
         return new Folder(id, ownerId, name, newAssetIds);
