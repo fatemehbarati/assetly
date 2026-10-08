@@ -1,4 +1,5 @@
 # Assetly
+[![CI](https://github.com/fatemehbarati/assetly/actions/workflows/ci.yml/badge.svg)](https://github.com/fatemehbarati/assetly/actions/workflows/ci.yml)
 
 A backend for storing and sharing design assets, like a small version of what sits behind a tool such as Canva. It has no UI, only an API that other programs talk to.
 
