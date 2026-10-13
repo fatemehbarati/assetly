@@ -1,11 +1,11 @@
 package com.assetly.core.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -45,14 +45,14 @@ class InMemoryFolderRepositoryTest {
         Folder folder = folderOf(ID, OWNER_ID, NAME);
         repository.save(folder);
 
-        assertEquals(folder, repository.findById(ID));
+        assertEquals(Optional.of(folder), repository.findById(ID));
     }
 
     @Test
-    void findByUnknownIdReturnsNull() {
+    void findByUnknownIdReturnsEmpty() {
         repository.save(folderOf(ID, OWNER_ID, NAME));
 
-        assertNull(repository.findById(OTHER_ID));
+        assertTrue(repository.findById(OTHER_ID).isEmpty());
     }
 
     @Test
@@ -108,7 +108,7 @@ class InMemoryFolderRepositoryTest {
         Folder updated = folder.withAsset(OTHER_ASSET_ID);
         repository.save(updated);
 
-        assertEquals(updated.assetIds(), repository.findById(ID).assetIds());
+        assertEquals(Optional.of(updated), repository.findById(ID));
     }
 
     @Test

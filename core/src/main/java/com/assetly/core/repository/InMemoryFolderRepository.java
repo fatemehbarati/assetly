@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.assetly.core.domain.Folder;
@@ -24,8 +25,8 @@ public class InMemoryFolderRepository implements FolderRepository {
     }
 
     @Override
-    public Folder findById(UUID id) {
-        return folders.get(id);
+    public Optional<Folder> findById(UUID id) {
+        return Optional.ofNullable(folders.get(id));
     }
 
     @Override

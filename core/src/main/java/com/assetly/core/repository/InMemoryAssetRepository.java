@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.assetly.core.domain.Asset;
@@ -19,8 +20,8 @@ public class InMemoryAssetRepository implements AssetRepository {
     }
 
     @Override
-    public Asset findById(UUID id) {
-        return assets.get(id);
+    public Optional<Asset> findById(UUID id) {
+        return Optional.ofNullable(assets.get(id));
     }
 
     @Override

@@ -2,12 +2,12 @@ package com.assetly.core.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -45,21 +45,20 @@ class InMemoryAssetRepositoryTest {
         repository.save(asset);
         repository.save(otherOwnersAsset);
 
-        assertEquals(asset, repository.findById(ID));
+        assertEquals(Optional.of(asset), repository.findById(ID));
     }
 
     @Test
-    void findByUnknownIdReturnsNull() {
+    void findByUnknownIdReturnsEmpty() {
         repository.save(asset);
 
-        assertNull(repository.findById(UUID.randomUUID()));
+        assertTrue(repository.findById(UUID.randomUUID()).isEmpty());
     }
 
     @Test
     void nullAssetCannotBeSaved() {
         var e = assertThrows(NullPointerException.class,
-            () -> repository.save(null)
-        );
+                () -> repository.save(null));
         assertEquals("asset cannot be null", e.getMessage());
     }
 
@@ -106,7 +105,6 @@ class InMemoryAssetRepositoryTest {
     @Test
     void findAllResultCannotBeModified() {
         assertThrows(UnsupportedOperationException.class,
-            () -> repository.findAll().add(asset)
-        );
+                () -> repository.findAll().add(asset));
     }
 }
