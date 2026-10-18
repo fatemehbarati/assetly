@@ -26,4 +26,8 @@ public record Asset(
             throw new IllegalArgumentException("sizeBytes cannot be negative");
         }
     }
+
+    public Asset withName(String newName) {
+        return new Asset(id, newName, mimeType, sizeBytes, ownerId, createdAt);
+    }
 }

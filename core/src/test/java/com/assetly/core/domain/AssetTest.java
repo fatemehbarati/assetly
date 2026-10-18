@@ -104,4 +104,39 @@ class AssetTest {
 
         assertNotEquals(firstAsset, secondAsset);
     }
+
+    @Test
+    void assetCannotBeRenamedToNull() {
+        Asset asset = new Asset(ID, NAME, MIME_TYPE, SIZE_BYTES, OWNER_ID, CREATED_AT);
+
+        var e = assertThrows(NullPointerException.class,
+            () -> asset.withName(null)
+        );
+        assertEquals("name cannot be null", e.getMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource (strings = {"", " "})
+    void assetCannotBeRenamedToBlank(String newName) {
+        Asset asset = new Asset(ID, NAME, MIME_TYPE, SIZE_BYTES, OWNER_ID, CREATED_AT);
+
+        var e = assertThrows(IllegalArgumentException.class,
+            () -> asset.withName(newName)
+        );
+        assertEquals("name cannot be blank", e.getMessage());
+    }
+
+    @Test
+    void assetCanBeRenamed() {
+        Asset asset = new Asset(ID, NAME, MIME_TYPE, SIZE_BYTES, OWNER_ID, CREATED_AT);
+        Asset renamed = asset.withName("new name");
+
+        assertAll(
+                () -> assertEquals(ID, renamed.id()),
+                () -> assertEquals("new name", renamed.name()),
+                () -> assertEquals(MIME_TYPE, renamed.mimeType()),
+                () -> assertEquals(SIZE_BYTES, renamed.sizeBytes()),
+                () -> assertEquals(OWNER_ID, renamed.ownerId()),
+                () -> assertEquals(CREATED_AT, renamed.createdAt()));
+    }
 }
