@@ -1,6 +1,7 @@
 package com.assetly.core.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -144,5 +145,39 @@ class AssetServiceTest {
 
         assertTrue(repository.findAll().containsAll(List.of(firstAsset, secondAsset)));
         assertTrue(assetService.listForOwner(unknownOwnerId).isEmpty());
+    }
+
+    @Test
+    void assetCanBeDeletedByOwner() {
+        Asset asset = assetService.upload(OWNER_ID, NAME, MIME_TYPE, SIZE_BYTES);
+        UUID assetId = asset.id();
+
+        assertEquals(asset, assetService.getById(assetId));
+        assertDoesNotThrow(() -> assetService.delete(assetId, OWNER_ID));
+        assertThrows(AssetNotFoundException.class,
+            () -> assetService.getById(assetId)
+        );
+    }
+
+    @Test
+    void assetCannotBeDeletedByOtherOwner() {
+        Asset asset = assetService.upload(OWNER_ID, NAME, MIME_TYPE, SIZE_BYTES);
+        UUID assetId = asset.id();
+
+        var e = assertThrows(NotAssetOwnerException.class,
+            () -> assetService.delete(assetId, OTHER_OWNER_ID)
+        );
+        assertEquals("user " + OTHER_OWNER_ID + " is not the owner of asset " + assetId, e.getMessage());
+        assertEquals(asset, assetService.getById(assetId));
+    }
+
+    @Test
+    void unknownAssetCannotBeDeleted() {
+        UUID id = UUID.randomUUID();
+
+        var e = assertThrows(AssetNotFoundException.class,
+            () -> assetService.delete(id, OWNER_ID)
+        );
+        assertEquals("asset not found: " + id, e.getMessage());
     }
 }

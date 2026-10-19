@@ -45,4 +45,12 @@ public class AssetService {
     public List<Asset> listForOwner(UUID ownerId) {
         return repository.findByOwnerId(ownerId);
     }
+
+    public void delete(UUID assetId, UUID requesterId) {
+        Asset asset = getById(assetId);
+        if (!asset.ownerId().equals(requesterId)) {
+            throw new NotAssetOwnerException(requesterId, assetId);
+        }
+        repository.deleteById(assetId);
+    }
 }
