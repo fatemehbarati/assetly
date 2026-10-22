@@ -2,6 +2,7 @@ package com.assetly.core.service;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,6 +13,9 @@ import com.assetly.core.exception.AssetNotFoundException;
 import com.assetly.core.exception.NotAssetOwnerException;
 
 public class AssetService {
+    private static final Comparator<Asset> NEWEST_FIRST = Comparator.comparing(Asset::createdAt).reversed()
+            .thenComparing(Asset::name);
+
     private final AssetRepository repository;
     private final Clock clock;
 
@@ -43,7 +47,7 @@ public class AssetService {
     }
 
     public List<Asset> listForOwner(UUID ownerId) {
-        return repository.findByOwnerId(ownerId);
+        return repository.findByOwnerId(ownerId).stream().sorted(NEWEST_FIRST).toList();
     }
 
     public void delete(UUID assetId, UUID requesterId) {

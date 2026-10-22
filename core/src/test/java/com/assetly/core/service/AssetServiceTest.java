@@ -180,4 +180,30 @@ class AssetServiceTest {
         );
         assertEquals("asset not found: " + id, e.getMessage());
     }
+
+    @Test
+    void listForOwnerReturnsNewestFirst() {
+        Asset older = assetAt("old.png", "2026-01-01T00:00:00Z");
+        Asset newer = assetAt("new.png", "2026-03-01T00:00:00Z");
+        Asset inBetween = assetAt("inBetween.png", "2026-02-01T00:00:00Z");
+        repository.save(older);
+        repository.save(newer);
+        repository.save(inBetween);
+
+        assertEquals(List.of(newer, inBetween, older), assetService.listForOwner(OWNER_ID));
+    }
+
+    @Test
+    void listForOwnerReturnsOrderedByNameForSameCreatedAt() {
+        Asset banana = assetAt("banana.png", "2026-01-01T00:00:00Z");
+        Asset apple = assetAt("apple.png", "2026-01-01T00:00:00Z");
+        repository.save(banana);
+        repository.save(apple);
+
+        assertEquals(List.of(apple, banana), assetService.listForOwner(OWNER_ID));
+    }
+
+    private static Asset assetAt(String name, String isoTime) {
+        return new Asset(UUID.randomUUID(), name, MIME_TYPE, SIZE_BYTES, OWNER_ID, Instant.parse(isoTime));
+    }
 }
