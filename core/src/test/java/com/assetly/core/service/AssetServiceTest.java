@@ -243,6 +243,20 @@ class AssetServiceTest {
         assertEquals("query cannot be null", e.getMessage());
     }
 
+    @Test
+    void totalSizeIsZeroForOwnerWithoutAssets() {
+        assertEquals(0, assetService.totalSizeForOwner(OWNER_ID));
+    }
+
+    @Test
+    void totalSizeSumsOnlyThatOwnersAssets() {
+        repository.save(new Asset(UUID.randomUUID(), NAME, MIME_TYPE, 100, OWNER_ID, NOW));
+        repository.save(new Asset(UUID.randomUUID(), NAME, MIME_TYPE, 250, OWNER_ID, NOW));
+        repository.save(new Asset(UUID.randomUUID(), NAME, MIME_TYPE, 999, OTHER_OWNER_ID, NOW));
+
+        assertEquals(350L, assetService.totalSizeForOwner(OWNER_ID));
+    }
+
     private static Asset assetAt(String name, String isoTime) {
         return new Asset(UUID.randomUUID(), name, MIME_TYPE, SIZE_BYTES, OWNER_ID, Instant.parse(isoTime));
     }

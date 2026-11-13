@@ -70,4 +70,8 @@ public class AssetService {
                 .filter(asset -> asset.name().toLowerCase(Locale.ROOT).contains(needle))
                 .toList();
     }
+
+    public long totalSizeForOwner(UUID ownerId) {
+        return repository.findByOwnerId(ownerId).stream().mapToLong(Asset::sizeBytes).sum();
+    }
 }
