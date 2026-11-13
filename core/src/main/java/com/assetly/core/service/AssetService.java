@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -56,5 +57,17 @@ public class AssetService {
             throw new NotAssetOwnerException(requesterId, assetId);
         }
         repository.deleteById(assetId);
+    }
+
+    public List<Asset> searchByName(UUID ownerId, String query) {
+        Objects.requireNonNull(query, "query cannot be null");
+        if (query.isBlank()) {
+            throw new IllegalArgumentException("query cannot be blank");
+        }
+
+        String needle = query.toLowerCase(Locale.ROOT);
+        return listForOwner(ownerId).stream()
+                .filter(asset -> asset.name().toLowerCase(Locale.ROOT).contains(needle))
+                .toList();
     }
 }

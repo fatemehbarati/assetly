@@ -54,8 +54,7 @@ class AssetServiceTest {
                 () -> assertEquals(SIZE_BYTES, uploaded.sizeBytes()),
                 () -> assertEquals(OWNER_ID, uploaded.ownerId()),
                 () -> assertEquals(NOW, uploaded.createdAt()),
-                () -> assertEquals(Optional.of(uploaded), repository.findById(uploaded.id()))
-            );
+                () -> assertEquals(Optional.of(uploaded), repository.findById(uploaded.id())));
     }
 
     @Test
@@ -155,8 +154,7 @@ class AssetServiceTest {
         assertEquals(asset, assetService.getById(assetId));
         assertDoesNotThrow(() -> assetService.delete(assetId, OWNER_ID));
         assertThrows(AssetNotFoundException.class,
-            () -> assetService.getById(assetId)
-        );
+                () -> assetService.getById(assetId));
     }
 
     @Test
@@ -165,8 +163,7 @@ class AssetServiceTest {
         UUID assetId = asset.id();
 
         var e = assertThrows(NotAssetOwnerException.class,
-            () -> assetService.delete(assetId, OTHER_OWNER_ID)
-        );
+                () -> assetService.delete(assetId, OTHER_OWNER_ID));
         assertEquals("user " + OTHER_OWNER_ID + " is not the owner of asset " + assetId, e.getMessage());
         assertEquals(asset, assetService.getById(assetId));
     }
@@ -176,8 +173,7 @@ class AssetServiceTest {
         UUID id = UUID.randomUUID();
 
         var e = assertThrows(AssetNotFoundException.class,
-            () -> assetService.delete(id, OWNER_ID)
-        );
+                () -> assetService.delete(id, OWNER_ID));
         assertEquals("asset not found: " + id, e.getMessage());
     }
 
@@ -201,6 +197,50 @@ class AssetServiceTest {
         repository.save(apple);
 
         assertEquals(List.of(apple, banana), assetService.listForOwner(OWNER_ID));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "first", "First", "FiRsT" })
+    void canSearchByNameForTheOwner(String query) {
+        Asset firstAsset = assetService.upload(OWNER_ID, "FirstAsset.png", MIME_TYPE, SIZE_BYTES);
+        assetService.upload(OTHER_OWNER_ID, "FirstOtherOwnerAsset.png", MIME_TYPE, SIZE_BYTES);
+
+        List<Asset> ownerAssets = assetService.searchByName(OWNER_ID, query);
+
+        assertEquals(List.of(firstAsset), ownerAssets);
+    }
+
+    @Test
+    void searchByNameReturnsNewestFirst() {
+        Asset olderAsset = assetAt("oldAsset.png", "2026-01-01T00:00:00Z");
+        Asset newerAsset = assetAt("newAsset.png", "2026-03-01T00:00:00Z");
+
+        repository.save(olderAsset);
+        repository.save(newerAsset);
+
+        assertEquals(List.of(newerAsset, olderAsset), assetService.searchByName(OWNER_ID, "asset"));
+    }
+
+    @Test
+    void searchWithNoMatchReturnsEmptyList() {
+        assetService.upload(OWNER_ID, "logo.png", MIME_TYPE, SIZE_BYTES);
+
+        assertEquals(List.of(), assetService.searchByName(OWNER_ID, "asset"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "", " ", "\t" })
+    void cannotSearchByBlankName(String query) {
+        var e = assertThrows(IllegalArgumentException.class,
+                () -> assetService.searchByName(OWNER_ID, query));
+        assertEquals("query cannot be blank", e.getMessage());
+    }
+
+    @Test
+    void cannotSearchByNullQuery() {
+        var e = assertThrows(NullPointerException.class,
+                () -> assetService.searchByName(OWNER_ID, null));
+        assertEquals("query cannot be null", e.getMessage());
     }
 
     private static Asset assetAt(String name, String isoTime) {
